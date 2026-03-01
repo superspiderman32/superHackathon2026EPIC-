@@ -325,40 +325,53 @@ export default function WorkoutTrend() {
                 ]}
                 style={styles.chartScroll}
               >
-                <LineChart
-                  data={{
-                    labels: chartData!.labels,
-                    datasets: [{ data: chartData!.data }],
-                  }}
-                  width={Math.max(
-                    Dimensions.get("window").width - 32,
-                    chartData!.labels.length * 48,
-                  )}
-                  height={220}
-                  yAxisLabel=""
-                  yAxisSuffix={metricSuffix}
-                  fromZero
-                  withDots
-                  withInnerLines
-                  onDataPointClick={handleDataPointClick}
-                  chartConfig={{
-                    backgroundColor: CHART_COLORS.gradientFrom,
-                    backgroundGradientFrom: CHART_COLORS.gradientFrom,
-                    backgroundGradientTo: CHART_COLORS.gradientTo,
-                    decimalPlaces: 0,
-                    color: (opacity = 1) =>
-                      `rgba(255, 255, 255, ${opacity})`,
-                    labelColor: (opacity = 1) =>
-                      `rgba(255, 255, 255, ${opacity})`,
-                    style: { borderRadius: 16 },
-                  }}
-                  bezier
-                  style={{
-                    borderRadius: 16,
-                  }}
-                />
+                <View
+                  style={[
+                    styles.chartWrapper,
+                    {
+                      width: Math.max(
+                        Dimensions.get("window").width - 32,
+                        chartData!.labels.length * 48,
+                      ),
+                    },
+                  ]}
+                >
+                  <LineChart
+                    data={{
+                      labels: chartData!.labels,
+                      datasets: [{ data: chartData!.data }],
+                    }}
+                    width={Math.max(
+                      Dimensions.get("window").width - 32,
+                      chartData!.labels.length * 48,
+                    )}
+                    height={220}
+                    yAxisLabel=""
+                    yAxisSuffix={metricSuffix}
+                    fromZero
+                    withDots
+                    withInnerLines
+                    onDataPointClick={handleDataPointClick}
+                    chartConfig={{
+                      backgroundColor: CHART_COLORS.gradientFrom,
+                      backgroundGradientFrom: CHART_COLORS.gradientFrom,
+                      backgroundGradientTo: CHART_COLORS.gradientTo,
+                      decimalPlaces: 0,
+                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                      labelColor: (opacity = 1) =>
+                        `rgba(255, 255, 255, ${opacity})`,
+                      style: { borderRadius: 16 },
+                    }}
+                    bezier
+                    style={{
+                      borderRadius: 16,
+                    }}
+                  />
+                </View>
               </ScrollView>
-              <Text style={styles.tapHint}>Tap a data point to see details</Text>
+              <Text style={styles.tapHint}>
+                Tap a data point to see details
+              </Text>
             </>
           )}
         </>
@@ -493,6 +506,13 @@ const styles = StyleSheet.create({
   },
   chartScrollContent: {
     paddingHorizontal: Spacing.screenPadding,
+  },
+  chartWrapper: {
+    backgroundColor: AppColors.backgroundSecondary,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: AppColors.border,
+    overflow: "hidden",
   },
   tapHint: {
     color: AppColors.textDim,
