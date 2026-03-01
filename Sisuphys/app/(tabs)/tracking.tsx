@@ -10,8 +10,15 @@ import { Fonts } from '@/constants/theme';
 
 export default function TabTwoScreen() {
   const [loaded, setLoaded] = useState(false);
-  const [lifts, setLifts] = useState<{ id: number; name: string }[]>([]);
-  const [liftName, setLiftName] = useState('');
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const [liftName, setLiftName] = useState(''); const [liftDate, setLiftDate] = useState('');
+  const [liftWeight, setLiftWeight] = useState('');
+  const [liftReps, setLiftReps] = useState('');
+  const [liftSets, setLiftSets] = useState('');
+  // const [currentID,setCurrentID] = useState('');
+
+  const [lifts, setLifts] = useState<{ id: number; name: string; entries: { date: string; weight: number; reps: number; sets: number }[] }[]>([]);
+
 
   useEffect(() => {
     const loadLifts = async () => {
@@ -32,11 +39,25 @@ export default function TabTwoScreen() {
     const newLift = {
       id: Date.now(),
       name: liftName,
+      entries: [],
     };
     setLifts(prev => [...prev, newLift]);
     setLiftName('');
   };
 
+ const handleAddEntry = (liftId: number) => {
+  const newEntry = {
+    date: liftDate,
+    weight: Number(liftWeight),
+    reps: Number(liftReps),
+    sets: Number(liftSets),
+  };
+  setLifts(prev => prev.map(lift =>
+    lift.id === liftId
+      ? { ...lift, entries: [...lift.entries, newEntry] }
+      : lift
+  ));
+};
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -63,17 +84,36 @@ export default function TabTwoScreen() {
       <TextInput
         style={styles.input}
         placeholder="Enter lift name..."
+        placeholderTextColor={"grey"}
+
+
         value={liftName}
         onChangeText={setLiftName}
       />
-
       <TouchableOpacity style={styles.button} onPress={handleAddLift}>
         <Text style={styles.buttonText}>+ Add Lift</Text>
       </TouchableOpacity>
 
+
       {lifts.map(lift => (
         <ThemedView key={lift.id} style={styles.liftCard}>
-          <ThemedText>{lift.name}</ThemedText>
+          {/* Header - tap to expand */}
+          <TouchableOpacity onPress={() => setExpanded(expanded === lift.id ? null : lift.id)}>
+            <ThemedText style={{ fontWeight: 'bold', fontSize: 16 }}>{lift.name}</ThemedText>
+          </TouchableOpacity>
+
+          {expanded === lift.id   && (
+            
+            <ThemedView>
+              <TextInput style={styles.input} placeholder="Date" placeholderTextColor="grey"onChangeText={setLiftDate} />
+              <TextInput style={styles.input} placeholder="Weight" placeholderTextColor="grey" keyboardType="numeric" onChangeText={setLiftWeight}/>
+              <TextInput style={styles.input} placeholder="Reps" placeholderTextColor="grey" keyboardType="numeric" onChangeText={setLiftReps} />
+              <TextInput style={styles.input} placeholder="Sets" placeholderTextColor="grey" keyboardType="numeric" onChangeText={setLiftSets}/>
+              <TouchableOpacity style={styles.button} onPress={() =>handleAddEntry(lift.id)}>
+                <Text style={styles.buttonText}>+ Add Entry</Text>
+              </TouchableOpacity>
+            </ThemedView>
+          )}
         </ThemedView>
       ))}
     </ParallaxScrollView>
@@ -119,4 +159,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
   },
+  TextInput: {
+    color: 'white'
+  }
 });
