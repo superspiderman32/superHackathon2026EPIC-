@@ -19,8 +19,8 @@ export const AppColors = {
   borderMuted: "rgba(255, 255, 255, 0.08)",
   success: "#4ade80",
   error: "#f87171",
-  chartGradientFrom: "rgb(255, 192, 1)",
-  chartGradientTo: "rgb(255, 132, 10)",
+  chartGradientFrom: "rgba(0, 0, 0, 0)",
+  chartGradientTo: "rgb(255, 186, 10)",
 };
 
 // Consistent spacing
