@@ -4,19 +4,30 @@ import {
   Text,
   View,
   StatusBar,
-  TouchableOpacity,
   ScrollView,
 } from "react-native";
 import { Image } from "expo-image";
 import { useFocusEffect } from "@react-navigation/native";
 import { useLifts } from "@/hooks/useLifts";
 import { AppColors, Spacing } from "@/constants/theme";
+import {
+  getSisyphusState,
+  getCurrentStreak,
+  getStreakMessage,
+  getQuoteForState,
+} from "@/constants/quotes";
 import type { Lift } from "@/types/exercise";
 
 const CELL_SIZE = 20;
 const CELL_GAP = 2;
 const WEEKS = 16;
 const ROWS = 7;
+
+const SISYPHUS_IMAGES = {
+  slow: require("@/assets/images/sisyphus-slow.png"),
+  pushing: require("@/assets/images/sisyphus-pushing.png"),
+  fast: require("@/assets/images/sisyphus-fast.png"),
+};
 
 function getWorkoutDates(lifts: Lift[]): Set<string> {
   const dates = new Set<string>();
@@ -70,6 +81,10 @@ function ConsistencyGrid({ workoutDates }: { workoutDates: Set<string> }) {
 
   return (
     <View style={styles.gridContainer}>
+      <Text style={styles.gridTitle}>The path up the mountain</Text>
+      <Text style={styles.gridSubtitle}>
+        Each square is a day. Fill it by logging a workout.
+      </Text>
       <View style={styles.grid}>
         {grid.map(({ row, col, date, workedOut }) => {
           const dateStr = date.toISOString().slice(0, 10);
@@ -113,6 +128,19 @@ export default function App() {
 
   const workoutDates = useMemo(() => getWorkoutDates(lifts), [lifts]);
   const workoutDaysCount = workoutDates.size;
+  const sisyphusState = useMemo(
+    () => getSisyphusState(workoutDates),
+    [workoutDates],
+  );
+  const streak = useMemo(() => getCurrentStreak(workoutDates), [workoutDates]);
+  const streakMessage = useMemo(
+    () => getStreakMessage(streak),
+    [streak],
+  );
+  const quote = useMemo(
+    () => getQuoteForState(sisyphusState, streak),
+    [sisyphusState, streak],
+  );
 
   return (
     <ScrollView
@@ -122,18 +150,34 @@ export default function App() {
     >
       <StatusBar barStyle="light-content" />
 
-      <Text style={styles.title}>Rep</Text>
+      <Text style={styles.title}>SISUPHYS</Text>
 
       <Image
-        source={require("@/assets/images/sisyphus-pushing.png")}
+        source={SISYPHUS_IMAGES[sisyphusState]}
         style={styles.sisyphusImage}
         contentFit="contain"
       />
-      <Text style={styles.subtitle}>"One must imagine Sisyphus happy"</Text>
+
+      <Text style={styles.subtitle}>{quote}</Text>
+
+      {sisyphusState === "slow" && (
+        <Text style={styles.stateHint}>
+          Log a workout to get Sisyphus moving again
+        </Text>
+      )}
+      {sisyphusState === "fast" && (
+        <Text style={styles.stateHint}>On fire! Keep pushing!</Text>
+      )}
+      {streakMessage && (
+        <View style={styles.streakBadge}>
+          <Text style={styles.streakText}>{streakMessage}</Text>
+        </View>
+      )}
 
       <ConsistencyGrid workoutDates={workoutDates} />
       <Text style={styles.subtitle}>
         {workoutDaysCount} workout day{workoutDaysCount !== 1 ? "s" : ""} logged
+        {streak > 0 && ` · ${streak} day streak`}
       </Text>
     </ScrollView>
   );
@@ -165,6 +209,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: "italic",
     marginTop: Spacing.sm,
+    textAlign: "center",
+  },
+  stateHint: {
+    color: AppColors.primary,
+    fontSize: 14,
+    marginTop: Spacing.sm,
+    fontWeight: "600",
+  },
+  streakBadge: {
+    backgroundColor: AppColors.primary,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: 20,
+    marginTop: Spacing.md,
+  },
+  streakText: {
+    color: AppColors.background,
+    fontSize: 14,
+    fontWeight: "700",
   },
   gridContainer: {
     marginTop: Spacing.sectionGap,
@@ -227,17 +290,5 @@ const styles = StyleSheet.create({
     width: 200,
     height: 160,
     marginTop: Spacing.lg,
-  },
-  button: {
-    backgroundColor: AppColors.primary,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    borderRadius: 8,
-    marginTop: Spacing.xxl,
-  },
-  buttonText: {
-    color: AppColors.background,
-    fontWeight: "bold",
-    letterSpacing: 2,
   },
 });

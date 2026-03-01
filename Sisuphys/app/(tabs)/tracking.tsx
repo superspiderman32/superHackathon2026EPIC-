@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
 import { StyleSheet, Alert, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, TextInput } from 'react-native';
@@ -57,22 +58,26 @@ export default function TabTwoScreen() {
   };
 
   const handleAddEntry = (liftId: number) => {
-    if(liftDate && liftWeight && liftReps && liftSets){
-    const newEntry: Entry = {
-      date: liftDate,
-      weight: Number(liftWeight),
-      reps: Number(liftReps),
-      sets: Number(liftSets),
-    };
-    setLifts(prev => prev.map(lift =>
-      lift.id === liftId
-        ? { ...lift, entries: [...lift.entries, newEntry] }
-        : lift
-    ));
-    setLiftDate('');
-    setLiftWeight('');
-    setLiftReps('');
-    setLiftSets('');}
+    if (liftDate && liftWeight && liftReps && liftSets) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      const newEntry: Entry = {
+        date: liftDate,
+        weight: Number(liftWeight),
+        reps: Number(liftReps),
+        sets: Number(liftSets),
+      };
+      setLifts(prev =>
+        prev.map(lift =>
+          lift.id === liftId
+            ? { ...lift, entries: [...lift.entries, newEntry] }
+            : lift,
+        ),
+      );
+      setLiftDate('');
+      setLiftWeight('');
+      setLiftReps('');
+      setLiftSets('');
+    }
   };
 
   const handleDeleteLift = (liftId: number) => {

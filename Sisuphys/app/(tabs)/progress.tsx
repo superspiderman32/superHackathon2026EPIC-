@@ -92,7 +92,7 @@ function computeStats(
   metric: MetricType,
 ) {
   if (!chartData || chartData.data.length === 0) {
-    return { pr: 0, sessions: 0, changePercent: 0 };
+    return { pr: 0, sessions: 0, changePercent: 0, isLatestPR: false };
   }
   const pr = Math.max(...chartData.data);
   const sessions = chartData.data.length;
@@ -100,7 +100,8 @@ function computeStats(
   const last = chartData.data[chartData.data.length - 1];
   const changePercent =
     first > 0 ? Math.round(((last - first) / first) * 100) : 0;
-  return { pr, sessions, changePercent };
+  const isLatestPR = last === pr && sessions >= 1;
+  return { pr, sessions, changePercent, isLatestPR };
 }
 
 const CHART_COLORS = {
@@ -216,10 +217,17 @@ export default function WorkoutTrend() {
               <View style={styles.statsRow}>
                 <View style={styles.statBox}>
                   <Text style={styles.statLabel}>PR</Text>
-                  <Text style={styles.statValue}>
-                    {stats.pr}
-                    {metricSuffix}
-                  </Text>
+                  <View style={styles.prValueRow}>
+                    <Text style={styles.statValue}>
+                      {stats.pr}
+                      {metricSuffix}
+                    </Text>
+                    {stats.isLatestPR && (
+                      <View style={styles.prBadge}>
+                        <Text style={styles.prBadgeText}>PR!</Text>
+                      </View>
+                    )}
+                  </View>
                 </View>
                 <View style={styles.statBox}>
                   <Text style={styles.statLabel}>Sessions</Text>
@@ -429,6 +437,22 @@ const styles = StyleSheet.create({
     color: AppColors.text,
     fontSize: 18,
     fontWeight: "700",
+  },
+  prValueRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+  prBadge: {
+    backgroundColor: AppColors.success,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  prBadgeText: {
+    color: AppColors.background,
+    fontSize: 12,
+    fontWeight: "800",
   },
   statChangePositive: {
     color: AppColors.success,
