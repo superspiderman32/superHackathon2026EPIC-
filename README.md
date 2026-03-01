@@ -1,10 +1,10 @@
-# Sisuphys
+# Sisyphus
 
 "One must imagine Sisyphys happy"
 
 A fitness tracking app inspired by the myth of Sisyphus. Log your lifts, watch your progress, and keep pushing the boulder up the mountain.
 
-> To change the world, one must start with himself. Sisyphus was condemned to push a boulder up a mountain, again and again, forever. Yet in that endless repetition lies a choice: to give in, or to find meaning in the climb. **Sisuphys** is for those who choose the climb. Every rep, every set, every day you show up is a step up the mountain. There is no finish line, only the path. Start with yourself. Build the discipline. Push the boulder for a better tommorow.
+> To change the world, one must start with himself. Sisyphus was condemned to push a boulder up a mountain, again and again, forever. Yet in that endless repetition lies a choice: to give in, or to find meaning in the climb. **Sisyphus** is for those who choose the climb. Every rep, every set, every day you show up is a step up the mountain. There is no finish line, only the path. Start with yourself. Build the discipline. Push the boulder for a better tommorow.
 
 ## Features
 
