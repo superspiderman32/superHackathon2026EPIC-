@@ -361,4 +361,9 @@ const styles = StyleSheet.create({
     height: 160,
     marginTop: Spacing.lg,
   },
+  demoHint: {
+    color: AppColors.textDim,
+    fontSize: 11,
+    marginTop: Spacing.lg,
+  },
 });
