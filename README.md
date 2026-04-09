@@ -1,4 +1,4 @@
-# Sisuphys
+# Sisyphus
 
 "One must imagine Sisyphys happy"
 
